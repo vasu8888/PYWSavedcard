@@ -1,0 +1,849 @@
+{
+	"info": {
+		"_postman_id": "e16c3f46-af2a-4628-8bfe-61842431f687",
+		"name": "PYWSavedCard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24374525",
+		"_collection_link": "https://interstellar-flare-95515.postman.co/workspace/Team-Workspace~1a8e0ce7-872b-4456-88a6-b64e78b0e58b/collection/24374525-e16c3f46-af2a-4628-8bfe-61842431f687?action=share&creator=24374525&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "buildrefid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"refIdVar\", jsonData.refId);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"refId not to be empty\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.refId).not.to.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "3894f59e4af4b091e68a8df68b26ee8d2760f27b23336f71914f400e91f188a3",
+						"type": "text"
+					},
+					{
+						"key": "txnId",
+						"value": "12391",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/telluride/2/checkout/1/p/buildrefid",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"telluride",
+						"2",
+						"checkout",
+						"1",
+						"p",
+						"buildrefid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "prepare",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"let tenderidx = jsonData.tenders[0].tenderType;\r",
+							"let tender1 = jsonData.tenders[1];\r",
+							"let tender2 = jsonData.tenders[2];\r",
+							"let totalDiscountAmount = jsonData.summary.totalDiscountAmount;\r",
+							"let status = jsonData.status;\r",
+							"let merchantName = jsonData.merchantName;\r",
+							"let merchantId = jsonData.merchantId;\r",
+							"let userState = jsonData.userState;\r",
+							"\r",
+							"var jsonResponse = JSON.parse(responseBody);\r",
+							"\r",
+							"postman.setEnvironmentVariable(\"cartIdVar\", jsonResponse.cartId);\r",
+							"\r",
+							"pm.test(\"tenders[0] is SYW_POINTS\", function() {\r",
+							"pm.expect(tenderidx).to.equals(\"SYW_POINTS\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"tenders[1] is APPLYANDBUY\", function() {\r",
+							"pm.expect(tender1.tenderType).to.eql(\"APPLYANDBUY\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"tenders[2] is CC_DC\", function() {\r",
+							"pm.expect(tender2.tenderType).to.eql(\"CC_DC\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking totalDiscountAmount\", function() {\r",
+							"pm.expect(totalDiscountAmount).to.eql(\"0.00\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if cartId is NOT Null\", function() {\r",
+							"pm.expect(jsonData.cartId).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To check status = cart\", function() {\r",
+							"pm.expect(status).to.eql(\"cart\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To check merchantName is TELL_PYW_MERCHANTTEST_UAT\", function() {\r",
+							"pm.expect(merchantName).to.eql(\"TELL_PYW_MERCHANTTEST_UAT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To check merchantId = TPMT\", function() {\r",
+							"pm.expect(merchantId).to.eql(\"TPMT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Checking User state\", function() {\r",
+							"pm.expect(userState).to.eql(\"UNAUTH\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const priceValueLocal = pm.environment.get(\"priceValue\");",
+							"const priceIncrementValueLocal = pm.environment.get(\"priceIncrementValue\");",
+							"let priceValueNew = (+priceValueLocal) + (+priceIncrementValueLocal);",
+							"pm.environment.set(\"priceValue\", priceValueNew);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "refid",
+						"value": "{{refIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "channel",
+						"value": "ONLINE",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "isLight",
+						"value": "Y",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"itemId\": \"1001\",\r\n            \"itemName\": \"\",\r\n            \"imageUrl\": \"\",\r\n            \"itemDesc\": \"\",\r\n            \"price\": \"5\",\r\n            \"points\":\"28000\"\r\n        }\r\n    ],\r\n    \"addlAttrs\": {\r\n        \"returnPath\": \"/paymentSummary\",\r\n        \"merchant\": \"RAIS\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/tell/api/checkout/v1/prepare",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"tell",
+						"api",
+						"checkout",
+						"v1",
+						"prepare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfercart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"//var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"memberNumberVar\", jsonData.memberNumber);\r",
+							"pm.environment.set(\"custIdVar\", jsonData.userSessionId);\r",
+							"pm.environment.set(\"payment_CardId\", jsonData.tenders[2].savedCards[0].paymentCardId);\r",
+							"pm.environment.set(\"paymentSnapshot_Id\", jsonData.tenders[2].savedCards[0].paymentSnapshotId);\r",
+							"pm.environment.set(\"cardHolder_Name\", jsonData.tenders[2].savedCards[0].cardHolderName);\r",
+							"pm.environment.set(\"postal_Code\", jsonData.tenders[2].savedCards[0].address.postalCode);\r",
+							"\r",
+							"\r",
+							"\r",
+							"let tenderidx = jsonData.tenders[0].tenderType;\r",
+							"let tender1 = jsonData.tenders[1];\r",
+							"let tender2 = jsonData.tenders[2];\r",
+							"let totalDiscountAmount = jsonData.summary.totalDiscountAmount;\r",
+							"let merchantName = jsonData.merchantName;\r",
+							"let basePoints = jsonData.summary.basePoints;\r",
+							"//let tenders = jsonData.tenders;\r",
+							"//let paymentCardId = jsonData.savedCards.paymentCardId;\r",
+							"\r",
+							"pm.test(\"tenders[0] is SYW_POINTS\", function() {\r",
+							"pm.expect(tenderidx).to.equals(\"SYW_POINTS\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"tenders[1] is APPLYANDBUY\", function() {\r",
+							"pm.expect(tender1.tenderType).to.eql(\"APPLYANDBUY\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"tenders[2] is CC_DC\", function() {\r",
+							"pm.expect(tender2.tenderType).to.eql(\"CC_DC\");\r",
+							"pm.expect(tender2.savedCards.paymentCardId).to.not.be.null;\r",
+							"pm.expect(tender2.savedCards.paymentSnapshotId).to.not.be.null;\r",
+							"//pm.expect(tender2.savedCards.brand).to.eql(\"SYW\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking totalDiscountAmount\", function() {\r",
+							"pm.expect(totalDiscountAmount).to.eql(\"0.00\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To check merchantName is TELL_PYW_MERCHANTTEST_UAT\", function() {\r",
+							"pm.expect(merchantName).to.eql(\"TELL_PYW_MERCHANTTEST_UAT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"basePoints not to be empty\", function() {\r",
+							"pm.expect(basePoints).not.to.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});\r",
+							"\r",
+							"//pm.test(\"paymentCardId not to be empty\", function() {\r",
+							"//pm.expect(tenders.savedCards.paymentCardId).not.to.be.null;\r",
+							"//});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cartId",
+						"value": "{{cartIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "refid",
+						"value": "{{refIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "channel",
+						"value": "ONLINE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"memberNumber\":\"7081327692469426\"\n}\n"
+				},
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/tell/api/checkout/v1/transfercart",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"tell",
+						"api",
+						"checkout",
+						"v1",
+						"transfercart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment update for saved card",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"let tenderidx = jsonData.tenders[0].tenderType;\r",
+							"let tender1 = jsonData.tenders[1];\r",
+							"let tender2 = jsonData.tenders[2];\r",
+							"let totalDiscountAmount = jsonData.summary.totalDiscountAmount;\r",
+							"let basePoints = jsonData.summary.basePoints;\r",
+							"\r",
+							"\r",
+							"pm.test(\"tenders[0] is SYW_POINTS\", function() {\r",
+							"pm.expect(tenderidx).to.equals(\"SYW_POINTS\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"tenders[1] is APPLYANDBUY\", function() {\r",
+							"pm.expect(tender1.tenderType).to.eql(\"APPLYANDBUY\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"tenders[2] is CC_DC\", function() {\r",
+							"pm.expect(tender2.tenderType).to.eql(\"CC_DC\");\r",
+							"})\r",
+							"\r",
+							"pm.test(\"checking paymentCardId\", function() {\r",
+							"pm.expect(tender2.savedCards.paymentCardId).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking paymentSnapshotId\", function() {\r",
+							"pm.expect(tender2.savedCards.paymentSnapshotId).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking totalDiscountAmount\", function() {\r",
+							"pm.expect(totalDiscountAmount).to.eql(\"0.00\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"basePoints not to be empty\", function() {\r",
+							"pm.expect(basePoints).not.to.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-traceid\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "cartId",
+						"value": "{{cartIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					},
+					{
+						"key": "channel",
+						"value": "ONLINE",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "refId",
+						"value": "{{refIdVar}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"payment\": [    {\r\n        \"creditCard\":         {\r\n            \"zipCode\": \"{{postal_Code}}\",\r\n            \"currency\": \"USD\",\r\n            \"expiryDate\": \"112025\",\r\n            \"streetAddress\": \"PO BOX 456\",\r\n            \"countryCode\": \"US\",\r\n            \"paymentCardId\": \"{{payment_CardId}}\", \r\n            \"cardHolderName\": \"{{cardHolder_Name}}\",\r\n            \"paymentSnapshotId\": \"{{paymentSnapshot_Id}}\"\r\n        },\r\n        \"paymentType\": \"creditCard\"\r\n    }]}\r\n    "
+				},
+				"url": {
+					"raw": "https://payment.uat.telluride.intra.shopyourway.com/tell/api/payment/v1/update",
+					"protocol": "https",
+					"host": [
+						"payment",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"tell",
+						"api",
+						"payment",
+						"v1",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "place order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if omsId is NOT Null\", function() {\r",
+							"pm.expect(data.omsId).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if cartId is NOT Null\", function() {\r",
+							"pm.expect(data.cartId).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if sessionId is Null\", function() {\r",
+							"pm.expect(data.sessionId).to.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To check merchantClientId is TELL_PYW_MERCHANTTEST_UAT\", function () {\r",
+							"pm.expect(data.merchantClientId).to.eql(\"TELL_PYW_MERCHANTTEST_UAT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "cartid",
+						"value": "{{cartIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "channel",
+						"value": "ONLINE",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "refid",
+						"value": "{{refIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					},
+					{
+						"key": "osname",
+						"value": "Windows",
+						"type": "text"
+					},
+					{
+						"key": "deviceid",
+						"value": "b23793f8-29e0-4f35-b7d2-977f3ec1e59b",
+						"type": "text"
+					},
+					{
+						"key": "x-forwarded-for",
+						"value": "106.193.211.115, 10.11.24.153",
+						"type": "text"
+					},
+					{
+						"key": "useragent",
+						"value": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+						"type": "text"
+					},
+					{
+						"key": "rotoken",
+						"value": "E619CD4F137E5D80D48FF32AAC38B690",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/tell/api/checkout/v1/placeorder",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"tell",
+						"api",
+						"checkout",
+						"v1",
+						"placeorder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "order payment confirm - CONFIRM Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"To Check if authCode is NOT Null\", function() {\r",
+							"pm.expect(data.authCode).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status success\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"SUCCESS\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Checking If paymentStatus gets CONFIRMED\", () => {\r",
+							"pm.expect(data.paymentStatus).to.eql(\"CONFIRMED\");\r",
+							"//pm.expect(data.paymentDetails.status).to.eql(\"SUCCESS\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "channel",
+						"value": "ONLINE",
+						"type": "text"
+					},
+					{
+						"key": "platform",
+						"value": "PYW",
+						"type": "text"
+					},
+					{
+						"key": "pywid",
+						"value": "{{cartIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "transactionId",
+						"value": "10001",
+						"type": "text"
+					},
+					{
+						"key": "actionType",
+						"value": "CONFIRM",
+						"type": "text"
+					},
+					{
+						"key": "transactionType",
+						"value": "2P",
+						"type": "text"
+					},
+					{
+						"key": "refid",
+						"value": "{{refIdVar}}",
+						"type": "text"
+					},
+					{
+						"key": "merchantClientId",
+						"value": "TELL_PYW_MERCHANTTEST_UAT",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/tell/api/checkout/v1/orderpaymentconfirm",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"tell",
+						"api",
+						"checkout",
+						"v1",
+						"orderpaymentconfirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card By Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has PaymentCardID\", function () {\r",
+							"  pm.expect(pm.response.json().payment.paymentId).to.eql(pm.environment.get(\"payment_CardId\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if OrderID is NOT Null\", function() {\r",
+							"pm.expect(data.omsOrderId).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"If Response contains OrderStatus,storeType,storeNumber\", () => {\r",
+							"  pm.expect(data.type).to.eql(\"confirm\");\r",
+							"  pm.expect(data.storeType).to.eql(\"PSYW\");\r",
+							"  pm.expect(data.storeNumber).to.eql(\"09180\");  \r",
+							"});\r",
+							"\r",
+							"pm.test(\"If Response contains SHARP\", () => {\r",
+							"  pm.expect(data.transactionSource).to.eql(\"SHARP\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking merchantName\", () => {\r",
+							"  pm.expect(data.merchantName).to.eql(\"TELL_PYW_MERCHANTTEST_UAT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"checking merchantId\", () => {\r",
+							"  pm.expect(data.merchantId).to.eql(\"TPMT\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"To Check if omsId is NOT Null\", function() {\r",
+							"pm.expect(data.omsId).to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"trace id is present\", function () {\r",
+							"    pm.response.to.have.header(\"x-tel-event-response-traceid\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cartId",
+						"value": "{{cartIdVar}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://checkout.uat.telluride.intra.shopyourway.com/telluride/event/getCartByCartId?cartId={{cartIdVar}}",
+					"protocol": "https",
+					"host": [
+						"checkout",
+						"uat",
+						"telluride",
+						"intra",
+						"shopyourway",
+						"com"
+					],
+					"path": [
+						"telluride",
+						"event",
+						"getCartByCartId"
+					],
+					"query": [
+						{
+							"key": "cartId",
+							"value": "{{cartIdVar}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
